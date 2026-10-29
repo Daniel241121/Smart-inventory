@@ -1,8 +1,10 @@
 'use client';
 
-import { FormEvent, useState } from 'react';
 import { useRouter } from 'next/navigation';
-import { supabase } from '../../src/lib/supabaseClient';
+import { useState, type FormEvent } from 'react';
+import { Button, Field, Input } from '@/components/ui';
+import { signIn } from '@/lib/api';
+import { errorMessage } from '@/lib/format';
 
 export default function LoginPage() {
   const router = useRouter();
@@ -11,43 +13,41 @@ export default function LoginPage() {
   const [error, setError] = useState('');
   const [loading, setLoading] = useState(false);
 
-  async function handleSubmit(event: FormEvent<HTMLFormElement>) {
+  async function handleSubmit(event: FormEvent) {
     event.preventDefault();
     setLoading(true);
     setError('');
-
-    const { error: signInError } = await supabase.auth.signInWithPassword({ email, password });
-
-    if (signInError) {
-      setError('Correo o contraseña incorrectos.');
+    try {
+      await signIn(email, password);
+      router.replace('/');
+      router.refresh();
+    } catch (err) {
+      setError(errorMessage(err));
       setLoading(false);
-      return;
     }
-
-    router.replace('/inventory');
   }
 
   return (
-    <section className="auth-shell">
-      <div className="auth-panel">
-        <p className="eyebrow">SMART INVENTORY</p>
-        <h1>Iniciar sesión</h1>
-        <p className="muted">Acceso para el equipo interno de bodega.</p>
-        <form onSubmit={handleSubmit} className="stack-form">
-          <label>
-            Correo
-            <input type="email" value={email} onChange={(event) => setEmail(event.target.value)} required />
-          </label>
-          <label>
-            Contraseña
-            <input type="password" value={password} onChange={(event) => setPassword(event.target.value)} required />
-          </label>
-          {error && <p className="form-error">{error}</p>}
-          <button type="submit" disabled={loading}>
-            {loading ? 'Validando...' : 'Entrar'}
-          </button>
+    <div className="flex min-h-screen items-center justify-center bg-slate-50 px-4">
+      <div className="w-full max-w-sm">
+        <div className="mb-8 flex flex-col items-center text-center">
+          <div className="mb-4 flex h-12 w-12 items-center justify-center rounded-xl bg-brand-600 text-lg font-bold text-white">SI</div>
+          <h1 className="text-xl font-semibold text-slate-900">Smart Inventory</h1>
+          <p className="mt-1 text-sm text-slate-500">Acceso para el equipo de bodega</p>
+        </div>
+        <form onSubmit={handleSubmit} className="space-y-4 rounded-2xl border border-slate-200 bg-white p-6 shadow-card">
+          <Field label="Correo">
+            <Input type="email" value={email} onChange={(e) => setEmail(e.target.value)} autoComplete="email" required />
+          </Field>
+          <Field label="Contraseña">
+            <Input type="password" value={password} onChange={(e) => setPassword(e.target.value)} autoComplete="current-password" required />
+          </Field>
+          {error && <p className="text-sm text-rose-600">{error}</p>}
+          <Button type="submit" size="lg" className="w-full" loading={loading}>
+            Entrar
+          </Button>
         </form>
       </div>
-    </section>
+    </div>
   );
 }
