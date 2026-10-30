@@ -4,7 +4,7 @@ import Link from 'next/link';
 import { History } from 'lucide-react';
 import { useState } from 'react';
 import { listMovements, listPayments } from '@/lib/api';
-import { formatDateTime, formatMoney, movementLabel, paymentMethodLabel, productName } from '@/lib/format';
+import { formatDateTime, formatMoney, movementLabel, paymentKindLabel, paymentMethodLabel, productName } from '@/lib/format';
 import type { MovementType } from '@/lib/types';
 import { useQuery } from '@/lib/use-query';
 import { MovementBadge } from '@/components/status-badge';
@@ -45,7 +45,7 @@ export default function MovementsPage() {
               filter === key ? 'bg-slate-900 text-white ring-slate-900' : 'bg-white text-slate-600 ring-slate-200 hover:bg-slate-50'
             )}
           >
-            {key === 'todos' ? 'Todo' : key === 'pagos' ? 'Pagos' : movementLabel[key]}
+            {key === 'todos' ? 'Todo' : key === 'pagos' ? 'Pagos y abonos' : movementLabel[key]}
           </button>
         ))}
       </div>
@@ -91,7 +91,7 @@ export default function MovementsPage() {
               ) : (
                 <li key={row.p.id} className="flex items-center justify-between gap-3 px-5 py-3">
                   <div className="flex min-w-0 items-center gap-3">
-                    <Badge tone="green">Pago</Badge>
+                    <Badge tone={row.p.kind === 'abono' ? 'violet' : 'green'}>{paymentKindLabel[row.p.kind]}</Badge>
                     <div className="min-w-0">
                       <Link href={`/locales/${row.p.store_id}`} className="truncate text-sm text-slate-900 hover:underline">
                         {row.p.store?.name}

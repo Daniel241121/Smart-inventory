@@ -1,7 +1,7 @@
 'use client';
 
 import { useEffect, useState } from 'react';
-import { registerPayment } from '@/lib/api';
+import { registerAbono } from '@/lib/api';
 import { errorMessage, formatMoney, paymentMethodLabel, parseMoney } from '@/lib/format';
 import type { PaymentMethod } from '@/lib/types';
 import { Button, Field, Input, Modal, cn } from './ui';
@@ -41,8 +41,8 @@ export function PaymentModal({
   async function save() {
     setSaving(true);
     try {
-      await registerPayment({ storeId, amount: value, method, notes });
-      toast('success', `Pago de ${formatMoney(value)} registrado para ${storeName}.`);
+      await registerAbono({ storeId, amount: value, method, notes });
+      toast('success', `Abono de ${formatMoney(value)} registrado para ${storeName}.`);
       onSaved();
       onClose();
     } catch (err) {
@@ -56,23 +56,23 @@ export function PaymentModal({
     <Modal
       open={open}
       onClose={onClose}
-      title={`Registrar pago · ${storeName}`}
+      title={`Registrar abono · ${storeName}`}
       footer={
         <>
           <Button variant="secondary" onClick={onClose}>
             Cancelar
           </Button>
           <Button variant="success" onClick={save} loading={saving} disabled={value <= 0}>
-            Guardar pago
+            Guardar abono
           </Button>
         </>
       }
     >
       <div className="space-y-4">
         <div className="rounded-lg bg-slate-50 px-4 py-3 text-sm">
-          Saldo actual: <span className="font-semibold text-slate-900">{formatMoney(balanceDue)}</span>
+          Debe actualmente: <span className="font-semibold text-slate-900">{formatMoney(balanceDue)}</span>
         </div>
-        <Field label="Valor recibido">
+        <Field label="Valor del abono">
           <Input
             inputMode="numeric"
             value={amount ? formatMoney(value) : ''}
@@ -84,7 +84,7 @@ export function PaymentModal({
         </Field>
         {balanceDue > 0 && (
           <Button variant="ghost" size="sm" onClick={() => setAmount(String(balanceDue))}>
-            Pagó todo ({formatMoney(balanceDue)})
+            Abonó todo lo que debe ({formatMoney(balanceDue)})
           </Button>
         )}
         <Field label="Medio de pago">

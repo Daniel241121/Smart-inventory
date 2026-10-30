@@ -61,7 +61,7 @@ export default function DashboardPage() {
           label="Por cobrar"
           value={formatMoney(debt)}
           tone={debt > 0 ? 'danger' : 'default'}
-          hint="Vendido sin pagar"
+          hint="Valor prestado − abonos"
           icon={<Wallet className="h-4 w-4" />}
         />
         <Stat
@@ -128,8 +128,8 @@ export default function DashboardPage() {
                     )}
                   </div>
                   <div className="hidden sm:block">
-                    <p className="text-xs text-slate-500">Pagado</p>
-                    <p className="text-sm tabular-nums text-slate-700">{formatMoney(store.total_paid)}</p>
+                    <p className="text-xs text-slate-500">Abonos</p>
+                    <p className="text-sm tabular-nums text-slate-700">{formatMoney(store.total_abonos)}</p>
                   </div>
                   <div className="col-span-2 flex items-center justify-between sm:col-span-1 sm:block">
                     <p className="text-xs text-slate-500">Debe</p>

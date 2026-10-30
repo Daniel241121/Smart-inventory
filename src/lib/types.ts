@@ -1,6 +1,8 @@
 export type UnitStatus = 'en_bodega' | 'prestado' | 'vendido' | 'perdido';
 export type MovementType = 'ingreso' | 'prestamo' | 'devolucion' | 'venta' | 'perdida' | 'ajuste';
 export type PaymentMethod = 'efectivo' | 'transferencia' | 'otro';
+/** venta = cobro de pares vendidos en una recogida; abono = pago parcial a la cuenta. */
+export type PaymentKind = 'venta' | 'abono';
 
 export type ShoppingCenter = { id: string; name: string };
 
@@ -18,6 +20,10 @@ export type StoreBalance = {
   oldest_loan_at: string | null;
   total_sold: number;
   total_paid: number;
+  total_abonos: number;
+  /** Abonos que todavía no se han usado para pagar pares vendidos. */
+  credit_available: number;
+  /** Valor de los pares que tiene + vendido − pagado. */
   balance_due: number;
   last_activity_at: string | null;
 };
@@ -66,6 +72,7 @@ export type Payment = {
   store_id: string;
   amount: number;
   method: PaymentMethod;
+  kind: PaymentKind;
   notes: string | null;
   created_at: string;
   store?: { name: string } | null;

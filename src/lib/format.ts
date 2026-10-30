@@ -1,4 +1,4 @@
-import type { MovementType, PaymentMethod, UnitStatus } from './types';
+import type { MovementType, PaymentKind, PaymentMethod, UnitStatus } from './types';
 
 const money = new Intl.NumberFormat('es-CO', {
   style: 'currency',
@@ -66,6 +66,11 @@ export const paymentMethodLabel: Record<PaymentMethod, string> = {
   efectivo: 'Efectivo',
   transferencia: 'Transferencia',
   otro: 'Otro'
+};
+
+export const paymentKindLabel: Record<PaymentKind, string> = {
+  venta: 'Pago de vendidos',
+  abono: 'Abono'
 };
 
 export function productName(product: { reference: string; color?: string | null }) {

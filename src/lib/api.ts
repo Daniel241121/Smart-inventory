@@ -102,16 +102,14 @@ export async function settleVisit(input: {
   storeId: string;
   returned: string[];
   sold: string[];
-  payment: number;
   paymentMethod: PaymentMethod;
   notes: string;
-}): Promise<{ returned: number; sold: number; sold_amount: number; payment: number }> {
+}): Promise<{ returned: number; sold: number; sold_amount: number; credit_used: number; received: number }> {
   return check(
     await supabase.rpc('settle_visit', {
       p_store_id: input.storeId,
       p_returned: input.returned,
       p_sold: input.sold,
-      p_payment: input.payment,
       p_payment_method: input.paymentMethod,
       p_notes: input.notes.trim() || null
     })
@@ -231,12 +229,14 @@ export async function registerIntake(productId: string, sizes: string[], price: 
 
 // ---------- Pagos ----------
 
-export async function registerPayment(input: { storeId: string; amount: number; method: PaymentMethod; notes: string }) {
+/** Abono suelto a la cuenta del local (fuera de una recogida). */
+export async function registerAbono(input: { storeId: string; amount: number; method: PaymentMethod; notes: string }) {
   check(
     await supabase.from('payments').insert({
       store_id: input.storeId,
       amount: input.amount,
       method: input.method,
+      kind: 'abono',
       notes: input.notes.trim() || null
     })
   );
@@ -245,7 +245,7 @@ export async function registerPayment(input: { storeId: string; amount: number; 
 export async function listPayments(storeId?: string, limit = 50): Promise<Payment[]> {
   let query = supabase
     .from('payments')
-    .select('id, store_id, amount, method, notes, created_at, store:stores(name)')
+    .select('id, store_id, amount, method, kind, notes, created_at, store:stores(name)')
     .order('created_at', { ascending: false })
     .limit(limit);
   if (storeId) query = query.eq('store_id', storeId);

@@ -35,7 +35,7 @@ export default function StoresPage() {
     <>
       <PageHeader
         title="Locales"
-        description="Lo que tiene prestado, lo que ha pagado y lo que debe cada local"
+        description="Los pares que tiene cada local, sus abonos y lo que debe"
         action={
           <Button onClick={() => setCreating(true)}>
             <Plus className="h-4 w-4" /> Nuevo local
@@ -104,8 +104,8 @@ export default function StoresPage() {
                     <dd className="mt-0.5 text-lg font-semibold tabular-nums text-slate-900">{store.pairs_on_loan}</dd>
                   </div>
                   <div>
-                    <dt className="text-xs text-slate-500">Pagado</dt>
-                    <dd className="mt-0.5 truncate text-sm font-semibold tabular-nums text-emerald-600">{formatMoney(store.total_paid)}</dd>
+                    <dt className="text-xs text-slate-500">Abonos</dt>
+                    <dd className="mt-0.5 truncate text-sm font-semibold tabular-nums text-emerald-600">{formatMoney(store.total_abonos)}</dd>
                   </div>
                   <div>
                     <dt className="text-xs text-slate-500">Debe</dt>
